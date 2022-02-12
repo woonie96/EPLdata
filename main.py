@@ -60,7 +60,7 @@ def player_parse(driver,site):
     print("Parsing done"+" "+"%04d/%02d/%02d %02d:%02d:%02d" % (now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec))
     for i in player_name:
         link = str(i.get_attribute('href'))
-        link = link.replace("/overview","/stats")
+        link = link.replace("/overview","/stats?co=1&se=-1")
         player.append([i.text,link])
     now = time.localtime()
     print("List complete"+" "+"%04d/%02d/%02d %02d:%02d:%02d" % (now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec))
@@ -70,23 +70,17 @@ def player_parse(driver,site):
     return player
 
 def to_csv(player_name):
-    #file = open('player.csv', 'w', newline='', encoding='utf-16')
+    file = open('player.csv', 'w', newline='', encoding='utf-16')
     dataframe = pd.DataFrame(player_name)
-    dataframe.to_csv("player.csv", header=False, index=False)
+    dataframe.to_csv("player.csv", index=False)
 
-def read_csv():
-    data = pd.read_csv('player.csv')
-    link = data.values
-    print(link[1][1])
+
 
 
 
 if __name__ == "__main__":
-    #driver = webdriver.Chrome(executable_path='chromedriver.exe')
+    driver = webdriver.Chrome(executable_path='chromedriver.exe')
     url = "https://www.premierleague.com/players"
-    #print(player_parse(url)[794]) # son heung - min 779
-    #print(player_parse(url)[794])
-    #print(player_parse(driver,url))
-    #player_list = player_parse(driver,url)
-    #to_csv(player_list)
-    read_csv()
+    player_list = player_parse(driver,url)
+    to_csv(player_list)
+
