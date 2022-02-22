@@ -17,7 +17,6 @@ import urllib.request
 import re
 
 
-
 def scroll(driver,timeout):
     scroll_pause_time = timeout
 
