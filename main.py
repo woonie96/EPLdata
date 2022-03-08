@@ -34,7 +34,7 @@ def scroll(driver,timeout):
 def cookie_ad(driver):
 
     try:
-        driver.implicitly_wait(10)
+        #driver.implicitly_wait(10)
         now = time.localtime()
         driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[1]/div[5]/button[1]').click() #cookie button
         print("cookies accepted"+" "+"%04d/%02d/%02d %02d:%02d:%02d" % (now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec))
@@ -42,6 +42,7 @@ def cookie_ad(driver):
         print("no cookies")
     try:
         driver.find_element(By.XPATH, '//*[@id="advertClose"]').click() #popup button
+
     except:
         now = time.localtime()
         print("No ad"+" "+"%04d/%02d/%02d %02d:%02d:%02d" % (now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec))
@@ -94,7 +95,24 @@ def choose_seaseon(driver,url):
             pass
     return season_id
 
+def team(driver,url):
+    driver.get(url)
+    driver.set_window_size(1920, 1024)
+    time.sleep(5)
+    cookie_ad(driver)
+    driver.find_element(By.XPATH, '//*[@id="mainContent"]/div[2]/div[1]/div/section/div[2]/div[2]').click()
+    html = driver.page_source
+    # html = response.text
+    soup = BeautifulSoup(html, 'html.parser')
+    drop_down = soup.find_all('ul', class_='dropdownList')[1]
+    team_id = []
+    for line in drop_down:
+        try:
+            team_id.append([line['data-option-id'], line['data-option-name']])
+        except:
+            pass
 
+    return team_id
 
 if __name__ == "__main__":
     driver = webdriver.Chrome(executable_path='chromedriver.exe')
@@ -103,7 +121,9 @@ if __name__ == "__main__":
     #cookie_ad(driver)
     session_id = choose_seaseon(driver, url)
     player_list = player_parse(driver,url)
+    teams = team(driver,url)
     driver.close()
 
     to_csv(player_list,"player.csv")
     to_csv(session_id,"session.csv")
+    to_csv(teams, "teams.csv")
