@@ -1,15 +1,15 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import requests
-from datetime import datetime
 import pandas as pd
+import os
 from selenium.webdriver.common.by import By
 import time
 from main import cookie_ad, to_csv
 import os
 import json
 
-
+url = "https://www.premierleague.com/results"
 
 def match_parsing(driver,url):
     response = requests.get(url)
@@ -18,35 +18,29 @@ def match_parsing(driver,url):
     if response.status_code == 200:
 
         driver.get(url)
-        cookie_ad(driver)
+        time.sleep(2)
         html = driver.page_source
         #html = response.text
         soup = BeautifulSoup(html,'html.parser')
-
-        match = soup.find_all('li', class_='matchFixtureContainer')
-        matches = []
-        for line in match:
-            local_time = datetime.fromtimestamp(int(line['data-comp-match-item-ko'])/1000)
-            #print(line['data-home']+" VS "+line['data-away']+" at "+str(local_time))
-            matches.append([line['data-home'],line['data-away'],local_time])
+        match = soup.find_all('ul',class_='matchList')
+        print(match)
 
     else:
         print(response.status_code)
 
-    return matches
-
+def read_csv(csv):
+    data = pd.read_csv(csv)
+    return data
 
 if __name__ == "__main__":
-    driver = webdriver.Chrome(executable_path='chromedriver.exe')
-    url_match = "https://www.premierleague.com/results"
-    url_player = "https://www.premierleague.com/players"
-    now = datetime.now()
-    #matches = match_parsing(driver, url_match)
-    #print(now.day)
-    # for line in matches:
-    #     match_time = line[2]
-    #     time_gap = now.day - line[2].day
-    #     if(time_gap >0 and time_gap <2):
-    #         print(line)
+    #driver = webdriver.Chrome(executable_path='chromedriver.exe')
+    #match_parsing(driver,url)
+    files = os.listdir("player_link")
 
-    driver.close()
+    csv_file = read_csv("player_csv\\Max Aarons\\Max Aarons_274.csv")
+    for line in csv_file:
+        print(line)
+   # print(csv_file)
+    test = "https://www.premierleague.com/players/4183/Ahmed-El-Mohamady/stats?co=1&se=363"
+    #print(test.split("/")[4])
+    #driver.close()
