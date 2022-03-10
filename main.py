@@ -78,7 +78,10 @@ def to_csv(list_name,csv_name):
     #file = open(csv_name, 'w', newline='', encoding='utf-16')
     dataframe = pd.DataFrame(list_name)
     dataframe.to_csv(csv_name, index=False)
-
+def to_csv_index(list_name,csv_name,index_list):
+    #file = open(csv_name, 'w', newline='', encoding='utf-16')
+    dataframe = pd.DataFrame(list_name,index=index_list)
+    dataframe.to_csv(csv_name, index=False)
 
 def choose_seaseon(driver,url):
     #driver = webdriver.Chrome(executable_path='chromedriver.exe')
